@@ -1,7 +1,15 @@
 import React from 'react'
 import ReactDom from 'react-dom'
-//import App from './components/App'
-//import Image from './components/image'
-import ImageList from './components/image-list'
+import App from './components/App'
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware} from 'redux'
+import thunk from 'redux-thunk'
 
-ReactDom.render(<ImageList />, document.querySelector('#root'))
+const store = createStore((state = []) => state, {}, applyMiddleware(thunk))
+
+ReactDom.render(
+    <Provider store={store}>
+        <App />
+    </Provider>,
+    document.querySelector('#root')
+)

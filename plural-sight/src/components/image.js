@@ -1,15 +1,41 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 
-export default function Image({ primary, secondary }) {
+function Image({ primaryImg, secondaryImg }) {
     const imageRef = useRef(null)
+    const [isLoading, setIsLoading] = useState(true)
 
-    return (
+    useEffect(() => {
+        window.addEventListener('scroll', scrollHandler)
+        setInView(isInView())
+        setIsLoading(false)
+        return () => {
+            window.removeEventListener('scroll', scrollHandler)
+        }
+    }, [isLoading])
+
+    const [inView, setInView] = useState(false)
+
+    const isInView = () => {
+        if (imageRef.current) {
+            const rect = imageRef.current.getBoundingClientRect()
+            return rect.top >= 0 && rect.bottom <= window.innerHeight
+        }
+        return false
+    }
+
+    const scrollHandler = () => {
+        setInView(isInView())
+    }
+
+    return isLoading ? null : (
         <img
-            src="./cat-black.jpg"
-            onMouseOver={() => (imageRef.current.src = './cat.jpeg')}
-            onMouseOut={() => (imageRef.current.src = './cat-black.jpg')}
+            src={inView ? secondaryImg : primaryImg}
+            alt=""
             ref={imageRef}
-            alt="cat"
-        ></img>
+            width="200"
+            height="200"
+        />
     )
 }
+
+export default Image
